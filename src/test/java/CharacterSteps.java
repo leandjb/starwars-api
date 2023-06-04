@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
 
 import static io.restassured.RestAssured.given;
 
@@ -40,7 +41,14 @@ public class CharacterSteps {
     public void resultShouldBeStatusCode(int expectedStatusCode) {
 
         int actualStatusCode = response.getStatusCode();
-        Assert.assertEquals(actualStatusCode, expectedStatusCode, "Status code does not match expected value");
-//        Assert.assertEquals(response.getBody().toString().contains("Anakin Skywalker"));
+        String responseBody = response.getBody().asString();
+        SoftAssert softAssert = new SoftAssert();
+
+
+        Assert.assertEquals(actualStatusCode, expectedStatusCode, "Status code does not match expected 200");
+        Assert.assertTrue(responseBody.contains("\"name\":\"Anakin Skywalker\""));
+
+        softAssert.assertAll();
+
     }
 }
