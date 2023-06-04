@@ -25,10 +25,10 @@ public class CharacterSteps {
         return validRandomNum;
     }
 
-    @When("^send a GET request to (.+) URI with 11 ID valid$")
-    public void sendAValidCharacterGETRequest(String URI) {
+    @When("^send a GET request to (.+) URI with ID ([1-9]\\d*)$")
+    public void sendAValidCharacterGETRequest(String URI, int num) {
         request = given()
-                .baseUri(URI+characterEndpoint+11)
+                .baseUri(URI+characterEndpoint+num)
                 .contentType(ContentType.JSON)
                 .log().all();
 
@@ -41,26 +41,6 @@ public class CharacterSteps {
 
         int actualStatusCode = response.getStatusCode();
         Assert.assertEquals(actualStatusCode, expectedStatusCode, "Status code does not match expected value");
+//        Assert.assertEquals(response.getBody().toString().contains("Anakin Skywalker"));
     }
-
-//    @Given("^have an invalid Star Wars Character$")
-//    public int haveAnInvalidStarWarsCharacter() {
-//        int invalidRandomNum = 0;
-//
-//        return invalidRandomNum;
-//    }
-//
-//    @When("send a GET request to (.+) URI with ([1-9]\\d*) ID invalid")
-//    public void sendAGETRequestToHttpsSwapiDevApiURIWithIDInvalid(String URI, int invalidRandomNum) {
-//        request = given()
-//                .baseUri(URI + characterEndpoint + invalidRandomNum)
-//                .contentType(ContentType.JSON)
-//                .log().all();
-//
-//        response = request.when().get().prettyPeek();
-//
-//        String actualResponse = response.toString();
-//
-//        return actualResponse;
-//    }
 }
