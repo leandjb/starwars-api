@@ -2,49 +2,65 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
-import io.restassured.internal.common.assertion.Assertion;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.testng.Assert;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.proxy;
+
 
 public class CharacterSteps {
 
     private static RequestSpecification request;
     private Response response;
-    private static String characterEndpoint = "people/";
-    private int validRandomNum = (int) ((Math.random()*80)+1);
-    private int invalidRandomNum = (int) ((Math.random() * (500 - 100)) + 90);
+    private String characterEndpoint = "people/";
+    private int validRandomNum;
+    private int invalidRandomNum;
 
     @Given("^have a valid Star Wars Character$")
-    public void haveAValidStarWarsCharacter() {
+    public int haveAValidStarWarsCharacter() {
 
+        int validRandomNum = (int) ((Math.random()*80)+1);
+
+        return validRandomNum;
     }
 
-    @When("^send a GET request to (.+) URI$")
-    public String sendACharacterGETRequest(String URI) {
-
+    @When("^send a GET request to (.+) URI with 11 ID valid$")
+    public void sendAValidCharacterGETRequest(String URI) {
         request = given()
-                .baseUri(URI+characterEndpoint+ validRandomNum)
+                .baseUri(URI+characterEndpoint+11)
                 .contentType(ContentType.JSON)
                 .log().all();
 
         response = request.when().get().prettyPeek();
 
-       return response.toString();
     }
 
     @Then("result should be status code {int}")
     public void resultShouldBeStatusCode(int expectedStatusCode) {
 
-//        Assert.fail();
-
+        int actualStatusCode = response.getStatusCode();
+        Assert.assertEquals(actualStatusCode, expectedStatusCode, "Status code does not match expected value");
     }
 
-    @Given("have an invalid Star Wars Character")
-    public void haveAnInvalidStarWarsCharacter() {
-
-    }
+//    @Given("^have an invalid Star Wars Character$")
+//    public int haveAnInvalidStarWarsCharacter() {
+//        int invalidRandomNum = 0;
+//
+//        return invalidRandomNum;
+//    }
+//
+//    @When("send a GET request to (.+) URI with ([1-9]\\d*) ID invalid")
+//    public void sendAGETRequestToHttpsSwapiDevApiURIWithIDInvalid(String URI, int invalidRandomNum) {
+//        request = given()
+//                .baseUri(URI + characterEndpoint + invalidRandomNum)
+//                .contentType(ContentType.JSON)
+//                .log().all();
+//
+//        response = request.when().get().prettyPeek();
+//
+//        String actualResponse = response.toString();
+//
+//        return actualResponse;
+//    }
 }
